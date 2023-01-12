@@ -1,6 +1,9 @@
 package com.example.amigoscodespringboottutorial.Student;
 
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,8 +26,8 @@ public class StudentController {
     }
 
     @PostMapping("")
-    public void registerNewStudent(@RequestBody Student student) {
-        studentService.addNewStudent(student);
+    public ResponseEntity<Student> registerNewStudent(@Valid @RequestBody Student student) {
+        return new ResponseEntity<>(studentService.addNewStudent(student), HttpStatus.CREATED);
     }
 
     @DeleteMapping(path = "{id}")
@@ -34,7 +37,7 @@ public class StudentController {
 
     @PutMapping(path = "{id}")
     public void replaceStudent(@PathVariable("id") Long id,
-                              @RequestBody Student student) {
+                               @RequestBody Student student) {
         studentService.replaceStudent(id, student);
     }
 

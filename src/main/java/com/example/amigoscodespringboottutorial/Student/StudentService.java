@@ -1,20 +1,26 @@
 package com.example.amigoscodespringboottutorial.Student;
 
+import jakarta.validation.ConstraintViolation;
+import jakarta.validation.Validation;
+import jakarta.validation.Validator;
+import jakarta.validation.ValidatorFactory;
+import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
+    private final Validator validator;
 
     @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
+        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
+        validator = factory.getValidator();
     }
 
     public List<Student> getStudents() {
@@ -30,15 +36,12 @@ public class StudentService {
             throw new IllegalStateException("Student must have a birthday");
     }
 
-    public void addNewStudent(Student student) {
+    public Student addNewStudent(Student student) {
         Optional<Student> studentOptional = studentRepository.findStudentByEmail(student.getEmail());
         if (studentOptional.isPresent())
             throw new IllegalStateException("email taken");
 
-        validateStudentRequiredFields(student);
-
-        studentRepository.save(student);
-
+        return studentRepository.save(student);
     }
 
     public void deleteStudent(Long id) {

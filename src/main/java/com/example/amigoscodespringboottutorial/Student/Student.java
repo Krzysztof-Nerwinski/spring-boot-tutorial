@@ -1,7 +1,10 @@
 package com.example.amigoscodespringboottutorial.Student;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 
+import java.lang.annotation.Annotation;
 import java.time.LocalDate;
 import java.time.Period;
 
@@ -19,12 +22,18 @@ public class Student {
             generator = "student_sequence"
     )
     private Long id;
+    @NotNull
+    @NotEmpty
     private String name;
     @Transient
     private Integer age;
+    @NotNull
     private LocalDate dob;
+    @NotNull
+    @NotEmpty
     private String email;
-
+    public interface Existing {
+    }
     public Student() {
     }
 
