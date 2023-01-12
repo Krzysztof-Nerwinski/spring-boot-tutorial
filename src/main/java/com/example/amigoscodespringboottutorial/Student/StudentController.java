@@ -36,9 +36,9 @@ public class StudentController {
     }
 
     @PutMapping(path = "{id}")
-    public void replaceStudent(@PathVariable("id") Long id,
+    public ResponseEntity<Student> replaceStudent(@PathVariable("id") Long id,
                                @RequestBody Student student) {
-        studentService.replaceStudent(id, student);
+        return new ResponseEntity<>(studentService.replaceStudent(id, student), HttpStatus.ACCEPTED);
     }
 
 }

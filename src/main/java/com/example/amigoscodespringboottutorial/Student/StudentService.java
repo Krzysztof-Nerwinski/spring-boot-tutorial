@@ -1,39 +1,23 @@
 package com.example.amigoscodespringboottutorial.Student;
 
-import jakarta.validation.ConstraintViolation;
-import jakarta.validation.Validation;
-import jakarta.validation.Validator;
-import jakarta.validation.ValidatorFactory;
-import org.apache.tomcat.util.bcel.Const;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 
 @Service
 public class StudentService {
 
     private final StudentRepository studentRepository;
-    private final Validator validator;
-
     @Autowired
     public StudentService(StudentRepository studentRepository) {
         this.studentRepository = studentRepository;
-        ValidatorFactory factory = Validation.buildDefaultValidatorFactory();
-        validator = factory.getValidator();
     }
 
     public List<Student> getStudents() {
         return studentRepository.findAll();
-    }
-
-    private void validateStudentRequiredFields(Student student) {
-        if (student.getName() == null || student.getName().length() == 0)
-            throw new IllegalStateException("Student must have a name");
-        if (student.getEmail() == null || student.getEmail().length() == 0)
-            throw new IllegalStateException("Student must have an email address");
-        if (student.getDob() == null)
-            throw new IllegalStateException("Student must have a birthday");
     }
 
     public Student addNewStudent(Student student) {
@@ -70,7 +54,7 @@ public class StudentService {
 //        studentRepository.save(student);
 //    }
 
-    public void replaceStudent(Long id, Student student) {
+    public Student replaceStudent(Long id, Student student) {
         if (student.getId() != null && !Objects.equals(student.getId(), id))
             throw new IllegalStateException("If provided body id must match path id");
 
@@ -78,12 +62,10 @@ public class StudentService {
                 studentRepository.findById(id).orElseThrow(() -> new IllegalStateException(
                         "student with id %d does not exist".formatted(id)));
 
-        validateStudentRequiredFields(student);
-
         existingStudent.setName(student.getName());
         existingStudent.setEmail(student.getEmail());
         existingStudent.setDob(student.getDob());
 
-        studentRepository.save(existingStudent);
+        return studentRepository.save(existingStudent);
     }
 }
