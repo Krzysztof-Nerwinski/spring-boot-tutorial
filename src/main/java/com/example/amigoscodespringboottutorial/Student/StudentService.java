@@ -1,5 +1,6 @@
 package com.example.amigoscodespringboottutorial.Student;
 
+import jakarta.websocket.MessageHandler;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -36,23 +37,22 @@ public class StudentService {
         studentRepository.deleteById(id);
     }
 
-//    @Transactional
-//    public void updateStudent(Long id, String name, String email) {
-//        Student student = studentRepository.findById(id).orElseThrow(() -> new IllegalStateException("student with " +
-//                "id " + id + " does not exist"));
-//        if (student.getName() != null && student.getEmail().length() > 0 && !Objects.equals(student.getName(),
-//            existingStudent.getName())) {
-//        existingStudent.setName(student.getName());
-//    }
-//        if (student.getEmail() != null && student.getEmail().length() > 0 && !Objects.equals(student.getEmail(),
-//            existingStudent.getEmail())) {
-//        existingStudent.setEmail(student.getEmail());
-//    }
-//        if (student.getDob() != null && !Objects.equals(student.getDob(), existingStudent.getDob())) {
-//        existingStudent.setDob(student.getDob());
-//    }
-//        studentRepository.save(student);
-//    }
+    public Student updateStudent(Long id, Student student) {
+        Student existingStudent = studentRepository.findById(id).orElseThrow(() -> new IllegalStateException("student with " +
+                "id " + id + " does not exist"));
+        if (student.getName() != null && student.getEmail().length() > 0 && !Objects.equals(student.getName(),
+            existingStudent.getName()))
+           existingStudent.setName(student.getName());
+
+        if (student.getEmail() != null && student.getEmail().length() > 0 && !Objects.equals(student.getEmail(),
+            existingStudent.getEmail()))
+            existingStudent.setEmail(student.getEmail());
+
+        if (student.getDob() != null && !Objects.equals(student.getDob(), existingStudent.getDob()))
+            existingStudent.setDob(student.getDob());
+
+        return studentRepository.save(student);
+    }
 
     public Student replaceStudent(Long id, Student student) {
         if (student.getId() != null && !Objects.equals(student.getId(), id))

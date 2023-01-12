@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 @RestController
 @RequestMapping(path = "api/v1/students")
@@ -31,14 +32,23 @@ public class StudentController {
     }
 
     @DeleteMapping(path = "{id}")
-    public void deleteStudent(@PathVariable("id") Long id) {
+    public ResponseEntity<Void> deleteStudent(@PathVariable("id") Long id) {
         studentService.deleteStudent(id);
+        return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PutMapping(path = "{id}")
     public ResponseEntity<Student> replaceStudent(@PathVariable("id") Long id,
-                               @Valid @RequestBody Student student) {
-        return new ResponseEntity<>(studentService.replaceStudent(id, student), HttpStatus.ACCEPTED);
+                                                  @Valid @RequestBody Student student) {
+        return new ResponseEntity<>(studentService.replaceStudent(id, student), HttpStatus.OK);
+    }
+
+    @PatchMapping(path = "{id}")
+    public ResponseEntity<Student> updateStudent(@PathVariable("id") Long id,
+                                                 @Valid @RequestBody Student student) {
+        // todo: change validation so not entire resource must be supplied
+        System.out.println(student.toString());
+        return new ResponseEntity<>(studentService.updateStudent(id, student), HttpStatus.OK);
     }
 
 }
